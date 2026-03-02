@@ -1,0 +1,62 @@
+//Explicación de código 
+
+import socket 
+//Carga la librería , que permite crear conexiones de red y comunicarse con puertos.
+
+Función scan_port(ip, port)
+//Define una función que recibe una IP y un número de puerto para probar si está abierto.
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+//Crea un socket TCP (tipo de conexión usada por la mayoría de servicios). AF_INET = IPv4  y SOCK_STREAM = TCP
+
+s.settimeout(2)
+//Establece un tiempo máximo de espera de 2 segundos para evitar que el programa se quede congelado.
+
+result = s.connect_ex((ip, port))
+//Intenta conectarse al puerto. Si devuelve 0, significa que el puerto está abierto. Si devuelve otro número, está cerrado o filtrado.
+
+//Si el puerto está abierto
+if result == 0:
+    print(f"[+] Puerto {port} abierto")
+//Muestra un mensaje indicando que el puerto está abierto.
+
+//Intentar obtener un banner
+s.send(b"Hello\r\n")
+//Envía un mensaje simple para provocar que el servicio responda.
+
+banner = s.recv(1024)
+//Intenta recibir hasta 1024 bytes de respuesta del servicio.
+
+print(f"    Banner: {banner.decode(errors='ignore')}")
+//Muestra el banner recibido, decodificándolo a texto
+
+except:
+    print("    No se pudo obtener banner")
+//Si el servicio no responde o no envía nada, muestra este mensaje.
+
+s.close()
+//Cierra la conexión para liberar recursos.
+
+//Manejo de errores generales
+except Exception as e:
+    print(f"Error en puerto {port}: {e}")
+//Si ocurre un error inesperado, lo muestra sin detener el programa.
+
+def main():
+//Define la función principal del programa
+
+ip = input("Ingresa la IP objetivo: ")
+//Pide al usuario la IP que se va a escanear.
+
+print(f"\nEscaneando {ip}...\n")
+//Muestra un mensaje indicando que el escaneo comienza.
+
+//Bucle que escanea puertos del 1 al 200
+for port in range(1, 201):
+    scan_port(ip, port)
+//Recorre los puertos del 1 al 200. Llama a scan_port() para cada puerto.
+
+//Ejecutar el programa
+if __name__ == "__main__":
+    main()
+//Indica que si el archivo se ejecuta directamente, se llame a main().
